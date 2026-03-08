@@ -54,7 +54,7 @@ def calcular_promedio(calificaciones):
         None
     '''
     
-    return sum(calificaciones) / len(calificaciones)
+    return sum(calificaciones) / len(calificaciones) if calificaciones else 0
 
 def determinar_estado(calificaciones, umbral):
     ''' Función para determinar qué materias están aprobadas y cuáles están reprobadas según un umbral dado.
@@ -66,6 +66,8 @@ def determinar_estado(calificaciones, umbral):
     Raises: 
         None
     '''
+    if not calificaciones:
+        return None, None
     id_reprobadas = []
     id_aprobadas = []
     for i, calificacion in enumerate(calificaciones):
@@ -84,6 +86,8 @@ def encontrar_extremos(calificaciones):
     Raises: 
         None
     '''
+    if not calificaciones:
+        return None, None
     max_calificacion = max(calificaciones) if calificaciones else None
     min_calificacion = min(calificaciones) if calificaciones else None
     
