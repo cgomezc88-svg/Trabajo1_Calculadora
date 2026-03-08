@@ -16,20 +16,32 @@ def ingresar_calificaciones():
     materias = []
     calificaciones = []
     while True:
+        # Validación de entrada de calificaciones para cada materia.
         materia = input("Ingrese el nombre de la materia: ")
-        try:
-            calificacion = float(input("Ingrese la calificación de la materia: "))
-            while 0 > calificacion or calificacion > 10:
-                print("La calificación debe estar entre 0 y 10. Intente nuevamente.")
+        while True:
+            try:
                 calificacion = float(input("Ingrese la calificación de la materia: "))
+                if 0 <= calificacion <= 10:
+                    calificaciones.append(calificacion)
+                    materias.append(materia)
+                    break
+                else:
+                    print("La calificación debe estar entre 0 y 10. Intente nuevamente.")
+            except ValueError:
+                print("Por favor, ingrese un número válido para la calificación.")
+        
+        # Validación de entrada para continuar con registro de materias.
+        while True:
+            continuar = input("¿Desea ingresar otra materia? (s/n): ")
+            if continuar.lower() == 's' or continuar.lower() == 'n':
+                break
             else:
-                calificaciones.append(calificacion)
-                materias.append(materia)               
-        except ValueError:
-            print("Por favor, ingrese un número válido para la calificación.")
-        continuar = input("¿Desea ingresar otra materia? (s/n): ")
-        if continuar.lower() != 's':
+                print("Por favor, ingrese 's' para sí o 'n' para no.")
+        
+        # Solo sale del ciclo de registro si la entrada es n.
+        if continuar.lower() == 'n':
             break
+
     return materias, calificaciones
 
 def calcular_promedio(calificaciones):
@@ -42,7 +54,7 @@ def calcular_promedio(calificaciones):
         None
     '''
     
-    return sum(calificaciones) / len(calificaciones) if calificaciones else 0
+    return sum(calificaciones) / len(calificaciones)
 
 def determinar_estado(calificaciones, umbral):
     ''' Función para determinar qué materias están aprobadas y cuáles están reprobadas según un umbral dado.
@@ -54,16 +66,13 @@ def determinar_estado(calificaciones, umbral):
     Raises: 
         None
     '''
-    if not calificaciones:
-        return None, None
-    else:
-        id_reprobadas = []
-        id_aprobadas = []
-        for i, calificacion in enumerate(calificaciones):
-            if calificacion < umbral:
-                id_reprobadas.append(i)
-            else:
-                id_aprobadas.append(i)
+    id_reprobadas = []
+    id_aprobadas = []
+    for i, calificacion in enumerate(calificaciones):
+        if calificacion < umbral:
+            id_reprobadas.append(i)
+        else:
+            id_aprobadas.append(i)
     return id_aprobadas, id_reprobadas
 
 def encontrar_extremos(calificaciones):
@@ -75,16 +84,12 @@ def encontrar_extremos(calificaciones):
     Raises: 
         None
     '''
-    if calificaciones:
-        max_calificacion = max(calificaciones) if calificaciones else None
-        min_calificacion = min(calificaciones) if calificaciones else None
-        
-        idx_max = calificaciones.index(max_calificacion)
-        idx_min = calificaciones.index(min_calificacion)
-    else:
-        idx_max = None
-        idx_min = None
+    max_calificacion = max(calificaciones) if calificaciones else None
+    min_calificacion = min(calificaciones) if calificaciones else None
     
+    idx_max = calificaciones.index(max_calificacion)
+    idx_min = calificaciones.index(min_calificacion)
+   
     return idx_max, idx_min
 
 def main():
@@ -108,8 +113,8 @@ def main():
         
         idx_max, idx_min = encontrar_extremos(calificaciones)
         
-        for materia in materias:
-            print(f"{materia}: {calificaciones[materias.index(materia)]}")
+        for i, materia in enumerate(materias):
+            print(f"{materia}: {calificaciones[i]}")
         print(f"Materias aprobadas: {[materias[i] for i in id_aprobadas]}")
         print(f"Materias reprobadas: {[materias[i] for i in id_reprobadas]}")
         print(f"Materia con la calificación más alta: {materias[idx_max]} con una calificación de {calificaciones[idx_max]}")
